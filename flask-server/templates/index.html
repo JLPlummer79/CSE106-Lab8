@@ -1,0 +1,13 @@
+<!--Most basic way of displaying all students JLP-->
+<!--All routes will redirect to here to display successful changes JLP-->
+{% extends "base.html" %}
+
+    {% block content %}
+    <h1>Student Database</h1>
+        {% for student in students %}
+            <p>{{student.name}}</p>
+            <p>{{student.grade}}</p>
+        {% endfor %}
+
+    {% endblock content %}
+   
