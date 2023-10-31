@@ -24,6 +24,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+
 class StudentView(ModelView):
     can_delete = False
     can_create = False
@@ -33,8 +34,12 @@ class StudentView(ModelView):
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False)
+    full_name = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
     access = db.Column(db.String, nullable=False)
+
+    def getName(self):
+        return self.full_name
 
     def getAccess(self):
         return self.access
@@ -55,8 +60,7 @@ class User(db.Model):
         return False
     
     
-
-    
+fullName = ""
 
 class Courses(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -67,10 +71,11 @@ class Courses(db.Model):
     studentName = db.Column(db.String, nullable=False)
     grades = db.Column(db.Integer, nullable=False)
     
-    
 
 with app.app_context():
-    db.create_all()
+    db.create_all()   
+
+
 
 admin = Admin(app, name='Admin', template_mode='bootstrap3')
 admin.add_view(ModelView(User, db.session))
@@ -81,29 +86,47 @@ admin.add_view(ModelView(Courses, db.session))
 def load_user(user_id):
     return User.get_id(user_id)
 
-
 @app.route('/login', methods=['POST'])
 def login():
     request_data = request.get_json()
    
     userName = request_data.get("username")
     passWord = request_data.get("password")
-   
 
-    # print(current_user)
-    # if current_user.getAccess() == 'Teacher':
-    #     return redirect(url_for())
-    # elif current_user.getAccess() == 'Student':
-    #     return redirect(url_for())
-    # elif current_user.getAccess() == 'Admin':
-    #     return redirect(url_for('admin')) 
     user = User.query.filter_by(username=userName).first()
-    print(user.get_id())
+    global fullName
+    fullName = user.getName()
+
     if user is None or not user.check_password(passWord):
         return "index"
     login_user(user)
     access = user.getAccess()
+    print(access)
+    return jsonify({"access": access})
+
+@app.route('/courses', methods=['GET'])
+def getCourses():
+    data = None
+    print("getcourses called")
+    with app.app_context():
+        data = Courses.query.all()
     
-    return jsonify({access: access})
+    courses_list = [
+    {
+        'className': course.className,
+        'teacherName': course.teacherName,
+        'time': course.time,
+        'capacity': course.capacity,
+        'studentName': course.studentName,
+        'grades': course.grades
+    }
+    for course in data
+    ]
+    return jsonify(courses=courses_list)
+
+@app.route('/name', methods=['GET'])
+def getName():
+    return jsonify({"name": fullName})
+
 
 app.run()
