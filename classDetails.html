@@ -6,18 +6,16 @@
     <script src="teacher.js" defer></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body onload="getClasses()">
-    <div class="Courses_Table">
-        <table id="courses_table"> 
+<body onload="LoadClasses()">
+    <div class="courseinfo">
+        <table id="courseinfo"> 
           <thead>
             <tr>
-              <th>Course Name</th>
-              <th>Teacher</th>
-              <th>Time</th>
-              <th>Students Enrolled</th>
+              <th>Student Name</th>
+              <th>Grade</th>
             </tr>
           </thead>
-          <tbody id="teacher_body">
+          <tbody id="course_body">
   
           </tbody>
         </table>
