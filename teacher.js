@@ -22,6 +22,10 @@ const getName = async () => {
     teacher_name = myJson["name"];
     displayMyClasses();
 };
+function signOut() {
+    window.location.href = "http://127.0.0.1:5501/";
+};
+document.getElementById("sign-out-link").addEventListener("click", signOut);
 
 
 
