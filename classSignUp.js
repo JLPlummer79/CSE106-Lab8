@@ -27,7 +27,9 @@ const getName = async () => {
     student_name = myJson["name"];
     displayMyClasses();
 };
-
+document.getElementById('sign-out-link').addEventListener('click', function() {
+    window.location.href = 'http://127.0.0.1:5501/';
+});
 
 
 function displayMyClasses() {
