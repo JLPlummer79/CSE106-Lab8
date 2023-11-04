@@ -128,5 +128,36 @@ def getCourses():
 def getName():
     return jsonify({"name": fullName})
 
+@app.route('/add', methods=['POST'])
+def add():
+    request_data = request.get_json()
+    cName = request_data.get("className")
+    tName = request_data.get("teacherName")
+    t = request_data.get("time")
+    c = request_data.get("capacity")
+    sName = request_data.get("studentName")
+    grade = request_data.get("grade")
+
+    print(cName)
+    print(tName)
+    print(t)
+    print(c)
+    print(sName)
+    print(grade)
+    entry = Courses(className = cName, teacherName = tName, time = t, capacity = c, studentName = sName, grades = grade)
+    with app.app_context():
+        db.session.add(entry)
+        db.session.commit()
+
+    return 0
+
+@app.route('/<sName>/<cName>', methods=['DELETE'])
+def delete_student(sName, cName):
+    with app.app_context():
+        entry = Courses.query.filter_by(className = cName, studentName=sName).first()
+        if entry:
+            db.session.delete(entry)
+            db.session.commit()  # Commit changes to the database
+    return 0
 
 app.run()
